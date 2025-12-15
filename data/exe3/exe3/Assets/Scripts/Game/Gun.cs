@@ -190,21 +190,28 @@ public class Gun : MonoBehaviour
     /// <param name="director"></param>
     public void ShootGun(Transform director)
     {
-        /*
-         * Task #1A: Implement the gun functionality
-         * Useful functions and variables:
-         *  - Spawn a bullet at given position: SpawnBullet(position, rotation)
-         *  - Create rotation from Euler angles: Quaternion.Euler(rotX, rotY, rotZ)
-         *  - Director of the bullets (the gun) : director.position, director.rotation
-         *  - Mode of the weapon, spread bullets if true : shotgun
-         *  - Number / spread of shotgun bullets : shotgunBullets, shotgunSpread
-         * Implement both single shot and shotgun (swap by pressing <SPACE> by default)
-         */
-        
-        SpawnBullet(
-            new Vector3{ x = 0.0f, y = 0.0f, z = 0.0f }, 
-            Quaternion.Euler(0.0f, 0.0f, 0.0f)
-        );
+        if (!shotgun)
+            {
+            // Single shot
+            SpawnBullet(director.position, director.rotation);
+            }
+        else
+        {
+            // Shotgun mode
+            float halfSpread = shotgunSpread / 2.0f;
+
+            for (int i = 0; i < shotgunBullets; i++)
+                {
+                    // Náhodný uhol v rozsahu [-halfSpread, halfSpread] okolo Z-osi
+                    float angleOffset = UnityEngine.Random.Range(-halfSpread, halfSpread);
+
+                    // Vytvoríme rotáciu okolo Z-osi
+                    Quaternion bulletRotation = director.rotation * Quaternion.Euler(0, 0, angleOffset);
+
+                    // Spawn guľku
+                    SpawnBullet(director.position, bulletRotation);
+                }
+        }
     }
 
     /// <summary>
